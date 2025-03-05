@@ -1,0 +1,24 @@
+body {
+    background: darkcyan url("images/background.gif");
+}
+
+#content {
+    margin: 2em;
+    padding: 1em;
+    min-height: 25em;
+    background: paleturquoise;
+    border: 1px solid black;
+    border-radius: 1em;
+}
+
+h1 {
+    border-bottom: 1px solid black;
+}
+
+a {
+    color: black;
+}
+
+a:hover, label:hover {
+    color: darkcyan;
+}
