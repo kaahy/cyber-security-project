@@ -35,7 +35,7 @@ You are: {{ user }}
 {% endif %}
 
 <p><a href="{% url 'polls:results' question.id %}">Results</a></p>
-
+<p><a href="/{{ question.id }}/comments">Comments ({{ question.comment_set.all|length }})</a></p>
 <p><a href="{% url 'polls:index' %}">Back to Polls</a></p>
 
         </div>

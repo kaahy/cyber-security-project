@@ -1,10 +1,11 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.db.models import F
 from django.views import generic
 from django.utils import timezone
-from .models import Choice, Question
+from django.template.loader import render_to_string
+from .models import Choice, Question, Comment
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
@@ -52,3 +53,42 @@ def delete_poll(request, question_id):
         return render(request, 'polls/detail.html', context)
     else:
         return HttpResponseRedirect(reverse('polls:index'))
+
+def add_comment(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    sent_comment = request.POST['comment_text']
+    comment_to_save = Comment(question_id = question.id, comment_text = sent_comment)
+    comment_to_save.save()
+    return HttpResponseRedirect(reverse('polls:view_comments', args=(question.id,)))
+
+def view_comments(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    comments = Comment.objects.filter(question_id=question_id)
+    comments_str = map(str, comments)
+
+    # Flaw: Cross-Site Scripting (XSS)
+    # Description: users can write executable (potentially harmful) code
+    # Fix: uncomment the code below
+
+    #import html
+    #comments_str = map(html.escape, comments_str)
+
+    """
+    Note: this flaw could also(/preferably) be fixed by
+    using Django templates instead of writing any html here,
+    but the assignment was to show backend fixes
+    and I wasn't sure if templates count as backend
+    """
+
+    comment_form = render_to_string('polls/comment_form.html', {'question': question}, request=request)
+
+    html_code = f"""
+    {comment_form}
+    {"<hr />".join(comments_str)}
+    <hr />
+    <p><a href="/{ question.id }">Back to voting</a></p>
+    <p><a href="/">Back to polls</a></p>
+    </div></body></html>
+    """
+
+    return HttpResponse(html_code)
