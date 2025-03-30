@@ -34,3 +34,21 @@ def vote(request, question_id):
         selected_choice.votes = F('votes') + 1
         selected_choice.save()
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+
+def delete_poll(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+
+    # Flaw: Broken Access Control
+    # Description: anyone could delete a poll by going to /<poll_id>/delete
+    # Fix: uncomment the code below
+
+    #if not request.user.is_superuser:
+    #    return HttpResponseRedirect(reverse('polls:index'))
+
+    try:
+        question.delete()
+    except:
+        context = {'question': question, 'error_message': "Error while trying to delete the poll."}
+        return render(request, 'polls/detail.html', context)
+    else:
+        return HttpResponseRedirect(reverse('polls:index'))
