@@ -27,14 +27,36 @@ class ResultsView(generic.DetailView):
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     try:
+        choice_id = request.POST['choice']
+    except:
+        context = {'question': question, 'error_message': "Something went wrong."}
+        return render(request, 'polls/detail.html', context)
+    else:
+        from django.db import connection
+        with connection.cursor() as cursor:
+            cursor.execute(f"UPDATE polls_choice SET votes=votes+1 WHERE id={choice_id}")
+            return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+
+    # Flaw: Injection
+    # Description: the form value for choice id could be altered to something like "1 OR 2=2" so that every choice gets affected
+    # Fix: uncomment the function below
+
+"""
+def vote(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
     except (KeyError, Choice.DoesNotExist):
         context = {'question': question, 'error_message': "You didn't select a choice."}
+        return render(request, 'polls/detail.html', context)
+    except:
+        context = {'question': question, 'error_message': "Something went wrong."}
         return render(request, 'polls/detail.html', context)
     else:
         selected_choice.votes = F('votes') + 1
         selected_choice.save()
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+"""
 
 def delete_poll(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
