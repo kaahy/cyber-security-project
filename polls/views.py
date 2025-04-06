@@ -63,12 +63,19 @@ def delete_poll(request, question_id):
 
     # Flaw: Broken Access Control
     # Description: anyone could delete a poll by going to /<poll_id>/delete
+    # or, if the csrf flaw was fixed, sending there a post request with 'id' and one's own 'csrfmiddlewaretoken'
     # Fix: uncomment the code below
 
     #if not request.user.is_superuser:
     #    return HttpResponseRedirect(reverse('polls:index'))
 
     try:
+        pass
+        # Flaw: Cross-Site Request Forgery (CSRF)
+        # Description: even an admin could be tricked to delete a poll by getting them to load /<poll_id>/delete for example through an img tag
+        # Fix: uncomment the code below AND what is commented out in detail.html
+
+        #question = Question.objects.get(pk=request.POST['id'])
         question.delete()
     except:
         context = {'question': question, 'error_message': "Error while trying to delete the poll."}

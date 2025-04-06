@@ -31,7 +31,17 @@ You are: {{ user }}
 </form>
 
 {% if user.is_superuser %}
-<p><a onclick="confirm('Are you sure you want to delete this poll?')" href="{% url 'polls:delete_poll' question.id %}">Delete</a></p>
+    <p><a onclick="return confirm('Are you sure you want to delete this poll?')" href="{% url 'polls:delete_poll' question.id %}">Delete</a></p>
+
+    <!-- A part of the CSRF flaw fix: uncomment the code below, and comment out or delete the code line above -->
+
+    <!--
+    <form action="{% url 'polls:delete_poll' question.id %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ question.id }}">
+        <input onclick="return confirm('Are you sure you want to delete this poll?')" type="submit" value="Delete">
+    </form>
+    -->
 {% endif %}
 
 <p><a href="{% url 'polls:results' question.id %}">Results</a></p>
