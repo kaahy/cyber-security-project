@@ -37,7 +37,7 @@ def vote(request, question_id):
             cursor.execute(f"UPDATE polls_choice SET votes=votes+1 WHERE id={choice_id}")
             return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
 
-    # Flaw: Injection
+    # Flaw 1: Injection
     # Description: the form value for choice id could be altered to something like "1 OR 2=2" so that every choice gets affected
     # Fix: uncomment the function below
 
@@ -61,7 +61,7 @@ def vote(request, question_id):
 def delete_poll(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
 
-    # Flaw: Broken Access Control
+    # Flaw 2: Broken Access Control
     # Description: anyone could delete a poll by going to /<poll_id>/delete
     # or, if the csrf flaw was fixed, sending there a post request with 'id' and one's own 'csrfmiddlewaretoken'
     # Fix: uncomment the code below
@@ -71,7 +71,7 @@ def delete_poll(request, question_id):
 
     try:
         pass
-        # Flaw: Cross-Site Request Forgery (CSRF)
+        # Flaw 3: Cross-Site Request Forgery (CSRF)
         # Description: even an admin could be tricked to delete a poll by getting them to load /<poll_id>/delete for example through an img tag
         # Fix: uncomment the code below AND what is commented out in detail.html
 
@@ -95,7 +95,7 @@ def view_comments(request, question_id):
     comments = Comment.objects.filter(question_id=question_id)
     comments_str = map(str, comments)
 
-    # Flaw: Cross-Site Scripting (XSS)
+    # Flaw 4: Cross-Site Scripting (XSS)
     # Description: users can write executable (potentially harmful) code
     # Fix: uncomment the code below
 

@@ -33,7 +33,7 @@ You are: {{ user }}
 {% if user.is_superuser %}
     <p><a onclick="return confirm('Are you sure you want to delete this poll?')" href="{% url 'polls:delete_poll' question.id %}">Delete</a></p>
 
-    <!-- A part of the CSRF flaw fix: uncomment the code below, and comment out or delete the code line above -->
+    <!-- A part of the flaw #3 fix: uncomment the code below, and comment out or delete the code line above -->
 
     <!--
     <form action="{% url 'polls:delete_poll' question.id %}" method="post">

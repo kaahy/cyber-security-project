@@ -85,7 +85,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
-# Flaw: Broken Authentication
+# Flaw 5: Broken Authentication
 # Description: passwords can be easy to guess (short, common etc.),
 # potentially making it possible for anyone to access admin rights
 # Fix: uncomment the code below
